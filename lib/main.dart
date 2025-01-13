@@ -17,7 +17,7 @@ return MaterialApp(
 
   initialRoute:HomeScreen.routeName ,
   routes:{
-    HomeScreen.routeName:(context)=>HomeScreen()
+    HomeScreen.routeName:(context)=>const HomeScreen()
 
 
   } ,
