@@ -1,5 +1,6 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/firebase_functions.dart';
 import 'package:todo_app/task_item.dart';
 
 class TasksTab extends StatelessWidget {
@@ -27,11 +28,32 @@ class TasksTab extends StatelessWidget {
           height: 24,
         ),
         Expanded(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return TaskItem();
+          child: FutureBuilder(
+            future:FirebaseFunctions.getTasks() ,
+            builder: (context,snapshot) {
+              if (snapshot.connectionState==ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError)
+                return Column(
+                  children: [
+                    Text("Something went wrong"),
+                    ElevatedButton(onPressed: () {}, child: Text("try again"))
+                  ],
+                );
+              var tasks=snapshot.data?.docs.map((doc) =>doc.data()).toList();
+              //var tasks=snapshot.data?.docs.map((e) =>e.data()).toList();
+
+              if (tasks?.isEmpty ??true){
+                return Text("No Tasks");
+              }
+             return ListView.builder(
+                itemBuilder: (context, index) {
+                  return TaskItem();
+                },
+                itemCount:tasks!.length,
+              );
             },
-            itemCount: 60,
           ),
         )
       ],

@@ -91,7 +91,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   title: titleController.text,
                   description: descriptionController.text,
                   date: selectedDate.millisecondsSinceEpoch);
-                  FirebaseFunctions.addTask(model);
+                  FirebaseFunctions.addTask(model).then((value){
+                  Navigator.pop(context)  ;
+              });
 
             },
                 style: ElevatedButton.styleFrom(

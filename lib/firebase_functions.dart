@@ -17,11 +17,20 @@ class FirebaseFunctions {
     );
   }
 
-  static void addTask(TaskModel model) {
+  static Future<void> addTask(TaskModel model) async{
     var collection = getTasksCollection();
     var docRef = collection.doc();
      model.id = docRef.id;
     docRef.set(model);
+  }
+
+
+  static Future<QuerySnapshot<TaskModel>>getTasks(){
+
+    var collection = getTasksCollection();
+    return collection.get();
+
+
   }
 
 }
