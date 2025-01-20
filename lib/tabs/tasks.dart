@@ -28,19 +28,20 @@ class TasksTab extends StatelessWidget {
           height: 24,
         ),
         Expanded(
-          child: FutureBuilder(
-            future:FirebaseFunctions.getTasks() ,
+          child:StreamBuilder(
+            stream:FirebaseFunctions.getTasks() ,
             builder: (context,snapshot) {
               if (snapshot.connectionState==ConnectionState.waiting){
                 return Center(child: CircularProgressIndicator());
               }
-              if (snapshot.hasError)
+              if (snapshot.hasError){
                 return Column(
                   children: [
                     Text("Something went wrong"),
                     ElevatedButton(onPressed: () {}, child: Text("try again"))
                   ],
                 );
+                }
               var tasks=snapshot.data?.docs.map((doc) =>doc.data()).toList();
               //var tasks=snapshot.data?.docs.map((e) =>e.data()).toList();
 
@@ -49,7 +50,7 @@ class TasksTab extends StatelessWidget {
               }
              return ListView.builder(
                 itemBuilder: (context, index) {
-                  return TaskItem();
+                  return TaskItem(model: tasks[index],);
                 },
                 itemCount:tasks!.length,
               );

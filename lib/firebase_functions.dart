@@ -25,10 +25,10 @@ class FirebaseFunctions {
   }
 
 
-  static Future<QuerySnapshot<TaskModel>>getTasks(){
+  static Stream<QuerySnapshot<TaskModel>>getTasks(){
 
     var collection = getTasksCollection();
-    return collection.get();
+    return collection.snapshots();
 
 
   }

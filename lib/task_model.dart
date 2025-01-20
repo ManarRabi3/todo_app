@@ -17,7 +17,7 @@ class TaskModel {
         : this(
   title:json['title'],
   description:json['description'],
-    isDone:json['isDone'],
+    isDone:json['isDone']??false,
     date:json['date'],
   id:json['id'],
   );
