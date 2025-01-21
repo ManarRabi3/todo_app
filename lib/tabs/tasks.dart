@@ -3,18 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/firebase_functions.dart';
 import 'package:todo_app/task_item.dart';
 
-class TasksTab extends StatelessWidget {
-  const TasksTab({super.key});
+class TasksTab extends StatefulWidget {
+   TasksTab({super.key});
+
+  @override
+  State<TasksTab> createState() => _TasksTabState();
+}
+
+class _TasksTabState extends State<TasksTab> {
+  DateTime dateTime =DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         CalendarTimeline(
-          initialDate: DateTime.now(),
+          initialDate: dateTime,
           firstDate: DateTime.now().subtract(Duration(days: 365)),
           lastDate: DateTime.now().add(Duration(days: 365)),
-          onDateSelected: (date) => print(date),
+          onDateSelected: (date) {
+              dateTime=date;
+              setState(() {
+
+              });
+
+          },
           leftMargin: 20,
           monthColor: Colors.black,
           dayColor: Colors.blue,
@@ -29,7 +42,7 @@ class TasksTab extends StatelessWidget {
         ),
         Expanded(
           child:StreamBuilder(
-            stream:FirebaseFunctions.getTasks() ,
+            stream:FirebaseFunctions.getTasks(dateTime) ,
             builder: (context,snapshot) {
               if (snapshot.connectionState==ConnectionState.waiting){
                 return Center(child: CircularProgressIndicator());

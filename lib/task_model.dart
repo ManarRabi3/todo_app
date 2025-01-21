@@ -27,6 +27,7 @@ class TaskModel {
       "title":title,
       "description":description,
       "date":date,
+      "isDone":isDone,
       "id":id,
     };
   }

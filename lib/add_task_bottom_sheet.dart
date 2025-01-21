@@ -87,10 +87,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           Container(
             width: double.infinity,
             child: ElevatedButton(onPressed: () {
+              print("heree ${selectedDate}");
               TaskModel model =TaskModel(
                   title: titleController.text,
                   description: descriptionController.text,
-                  date: selectedDate.millisecondsSinceEpoch);
+                  date:DateUtils.dateOnly(selectedDate) .millisecondsSinceEpoch);
                   FirebaseFunctions.addTask(model).then((value){
                   Navigator.pop(context)  ;
               });
