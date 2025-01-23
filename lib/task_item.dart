@@ -70,7 +70,7 @@ class TaskItem extends StatelessWidget {
               ),
               model.isDone
                   ? Text(
-                      "Done!",
+                      "Done!!",
                       style: TextStyle(fontSize: 22, color: Colors.green),
                     )
                   : IconButton(
