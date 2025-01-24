@@ -4,12 +4,14 @@ class TaskModel {
   String description;
   int date;
   bool isDone;
+  String userId;
 
   TaskModel({
         this.id ="",
         required this.title,
         required this.description,
         required this.date,
+        required this.userId,
         this.isDone =false,
   });
 
@@ -19,6 +21,7 @@ class TaskModel {
   description:json['description'],
     isDone:json['isDone']??false,
     date:json['date'],
+    userId:json['userID'],
   id:json['id'],
   );
 
@@ -28,6 +31,7 @@ class TaskModel {
       "description":description,
       "date":date,
       "isDone":isDone,
+      "userID":userId,
       "id":id,
     };
   }

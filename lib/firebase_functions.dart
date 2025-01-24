@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/task_model.dart';
+import 'models/task_model.dart';
+import 'models/user_model.dart';
 
 class FirebaseFunctions {
-
   static CollectionReference<TaskModel> getTasksCollection() {
     return FirebaseFirestore.instance
         .collection("Tasks")
@@ -15,41 +15,75 @@ class FirebaseFunctions {
       toFirestore: (taskModel, _) {
         return taskModel.toJson();
       },
-
     );
   }
 
-  static Future<void> addTask(TaskModel model) async{
+  static CollectionReference<UserModel> getUsersCollection() {
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .withConverter<UserModel>(
+      fromFirestore: (snapshot, _) {
+        return UserModel.fromJson(snapshot.data()!);
+      },
+      toFirestore: (user, _) {
+        return user.toJson();
+      },
+    );
+  }
+
+  static Future<void> addUser(UserModel userModel) async {
+    var collection = getUsersCollection();
+    var docRef = collection.doc(userModel .id);
+    return docRef.set(userModel);
+  }
+
+  static Future<void> addTask(TaskModel model) async {
     var collection = getTasksCollection();
     var docRef = collection.doc();
-     model.id = docRef.id;
+    model.id = docRef.id;
     docRef.set(model);
   }
 
-
-  static Stream<QuerySnapshot<TaskModel>>getTasks(DateTime dateTime){
-
+  static Stream<QuerySnapshot<TaskModel>> getTasks(DateTime dateTime) {
     var collection = getTasksCollection();
-    return collection.where("date",isEqualTo: DateUtils.dateOnly(dateTime).millisecondsSinceEpoch).snapshots();
-
+    return collection
+    .where("userID",isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+        .where("date",
+            isEqualTo: DateUtils.dateOnly(dateTime).millisecondsSinceEpoch)
+        .snapshots();
   }
 
-  static Future<void> deleteTask(String id){
-     return getTasksCollection().doc(id).delete();
+  static Future<void> deleteTask(String id) {
+    return getTasksCollection().doc(id).delete();
   }
-  static Future<void> updateTask(TaskModel model){
+  static Future<void> updateTask(TaskModel model) {
     return getTasksCollection().doc(model.id).update(model.toJson());
   }
 
+  static Future<UserModel?>readUser()async{
+    DocumentSnapshot<UserModel>docRef=
+        await getUsersCollection().doc(FirebaseAuth.instance.currentUser!.uid).get();
+  }
 
-   static creatAccountAuth(String emailAddress ,String password,{required Function onSuccess,required Function onError})async{
+
+  static creatAccountAuth(String emailAddress, String password,
+      {required Function onSuccess, required Function onError,
+        required String userName,required String phone,required int age}) async {
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailAddress,
         password: password,
       );
-       await credential.user!.sendEmailVerification();
-       onSuccess();
+      await credential.user!.sendEmailVerification();
+      UserModel userModel=UserModel(
+        id: credential.user!.uid,
+          email: emailAddress,
+          userName: userName,
+          age: age,
+          phone: phone);
+      addUser(userModel);
+      onSuccess();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         onError(e.message);
@@ -61,31 +95,20 @@ class FirebaseFunctions {
       onError(e.toString());
       print(e);
     }
-
   }
-  static loginUser(String emailAddress , String password,
-      {required Function onSuccess,required Function onError})async{
+
+  static loginUser(String emailAddress, String password,
+      {required Function onSuccess, required Function onError}) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailAddress,
-          password: password
-      );
-      if(credential !=null) {
-        onSuccess(credential.user?.displayName??"");
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: emailAddress, password: password);
+      if (credential != null) {
+        onSuccess(credential.user?.displayName ?? "");
       }
     } on FirebaseAuthException catch (e) {
-     onError(e.message);
-    } catch (e){
+      onError(e.message);
+    } catch (e) {
       onError(e.toString());
     }
   }
-
-
-
-
-
 }
-
-
-
-

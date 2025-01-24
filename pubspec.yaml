@@ -40,7 +40,7 @@ dependencies:
   cloud_firestore: ^5.6.1
   flutter_slidable: ^3.1.2
   firebase_auth: ^5.4.1
-
+  provider: ^6.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,9 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/login/login.dart';
+import 'package:todo_app/providers/my_provider.dart';
 import 'package:todo_app/tabs/settings.dart';
 import 'package:todo_app/tabs/tasks.dart';
 
@@ -19,15 +23,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-     String label=ModalRoute.of(context)?.settings.arguments as String;
+     var pro=Provider.of<MyProvider>(context);
     return Scaffold(
       extendBody: true,
       backgroundColor: Color(0xFFDFECDB),
       appBar: AppBar(
         title:  Text(
-          "Hello $label",
+          "Hello ${pro.userModel?.userName}",
           style: TextStyle(fontSize: 40, color: Colors.white),
         ),
+        actions: [
+          IconButton(onPressed: (){
+            FirebaseAuth.instance.signOut();
+            Navigator.pushNamed(context, LoginScreen.routeName);
+          }, icon: Icon(Icons.logout))
+        ],
         backgroundColor: Colors.blue,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

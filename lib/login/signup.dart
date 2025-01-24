@@ -85,7 +85,11 @@ class SignupScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 FirebaseFunctions.creatAccountAuth(
-                    emailController.text, passwordController.text,
+                  emailController.text,passwordController.text,
+                    age: int.parse(ageController.text),
+                  phone:   phoneController.text,
+                   userName:  userNamaController.text,
+
                     onSuccess: () {
                   Navigator.pushNamed(context, LoginScreen.routeName);
                 }, onError: (errpr) {
