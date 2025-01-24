@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/home.dart';
 import 'package:todo_app/login/signup.dart';
+
+import '../firebase_functions.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String routeName = "Login";
 
-  const LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
+
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,29 +26,30 @@ class LoginScreen extends StatelessWidget {
             padding: const EdgeInsets.all(18.0),
             child: Text.rich(
                 textAlign: TextAlign.center,
-                TextSpan(
-              children: [
-                TextSpan(text: "Donot have an Account ? "),
-                TextSpan(text: "Signup ",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                )),
-              ]
-            )),
+                TextSpan(children: [
+                  TextSpan(text: "Donot have an Account ? "),
+                  TextSpan(
+                      text: "Signup ",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      )),
+                ])),
           )),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
                 labelText: 'Email',
               ),
             ),
             const SizedBox(height: 16),
-            const TextField(
+            TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -50,7 +57,30 @@ class LoginScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                FirebaseFunctions.loginUser(
+                    emailController.text, passwordController.text,
+                    onSuccess: (label) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, HomeScreen.routeName, (rout) => false,
+                      arguments: label);
+                }, onError: (error) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("Error"),
+                      content: Text("error"),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("Okay!"))
+                      ],
+                    ),
+                  );
+                });
+              },
               child: const Text('Login'),
             ),
           ],

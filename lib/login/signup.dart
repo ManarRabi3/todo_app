@@ -5,13 +5,14 @@ import 'package:todo_app/login/login.dart';
 class SignupScreen extends StatelessWidget {
   static const String routeName = "Signup";
 
-   SignupScreen({Key? key}) : super(key: key);
+  SignupScreen({Key? key}) : super(key: key);
 
-   var emailController=TextEditingController();
-   var userNamaController=TextEditingController();
-   var passwordController=TextEditingController();
-   var ageController=TextEditingController();
-   var phoneController=TextEditingController();
+  var emailController = TextEditingController();
+  var userNamaController = TextEditingController();
+  var passwordController = TextEditingController();
+  var ageController = TextEditingController();
+  var phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,24 +28,22 @@ class SignupScreen extends StatelessWidget {
             padding: EdgeInsets.all(18.0),
             child: Text.rich(
                 textAlign: TextAlign.center,
-                TextSpan(
-                    children: [
-                      TextSpan(text: "I have an Account ? "),
-                      TextSpan(text: "Login ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                          )),
-                    ]
-                )),
+                TextSpan(children: [
+                  TextSpan(text: "I have an Account ? "),
+                  TextSpan(
+                      text: "Login ",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      )),
+                ])),
           )),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             TextField(
+            TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
@@ -52,14 +51,14 @@ class SignupScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-             TextField(
-               controller: userNamaController,
+            TextField(
+              controller: userNamaController,
               decoration: const InputDecoration(
                 labelText: 'Username',
               ),
             ),
             const SizedBox(height: 16),
-             TextField(
+            TextField(
               controller: phoneController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
@@ -67,16 +66,16 @@ class SignupScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-             TextField(
-               controller: ageController,
+            TextField(
+              controller: ageController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: 'Age',
               ),
             ),
             const SizedBox(height: 16),
-             TextField(
-               controller: passwordController,
+            TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Password',
@@ -85,9 +84,24 @@ class SignupScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-
                 FirebaseFunctions.creatAccountAuth(
-                    emailController.text, passwordController.text);
+                    emailController.text, passwordController.text,
+                    onSuccess: () {
+                  Navigator.pushNamed(context, LoginScreen.routeName);
+                }, onError: (errpr) {
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                            title: Text("Error"),
+                            content: Text("erorr"),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () {Navigator.pop(context);}, child: Text("Cancel")),
+                              ElevatedButton(
+                                  onPressed: () {Navigator.pop(context);}, child: Text("Ok"))
+                            ],
+                          ));
+                });
               },
               child: const Text('SignUp'),
             ),

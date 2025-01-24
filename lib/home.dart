@@ -19,12 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+     String label=ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       extendBody: true,
       backgroundColor: Color(0xFFDFECDB),
       appBar: AppBar(
-        title: const Text(
-          "ToDo",
+        title:  Text(
+          "Hello $label",
           style: TextStyle(fontSize: 40, color: Colors.white),
         ),
         backgroundColor: Colors.blue,
